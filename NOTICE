@@ -1,0 +1,9 @@
+starknet-blob-history
+Copyright 2026 BlockX Labs LLC
+
+This product includes Python ports of code from starkware-libs/sequencer
+(https://github.com/starkware-libs/sequencer, commit 312f7f6ca120), Copyright StarkWare Industries Ltd.,
+licensed under the Apache License, Version 2.0. Ported parts: blob decoding (kzg/utils.rs),
+stateless compression (stateless_compression/utils.rs), OS output / state-diff parsing (io/os_output*.rs)
+and stateful compression semantics (blockifier state/stateful_compression.rs). The ports were rewritten
+in Python and modified; they are not verbatim copies.

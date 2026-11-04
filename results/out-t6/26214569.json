@@ -1,0 +1,150 @@
+{
+  "l1_block": 26214569,
+  "updates": [
+    {
+      "crosscheck": {
+        "alias_contract_storage": {
+          "equal": true,
+          "matches": 6519,
+          "mismatches": 0,
+          "ours_entries": 6519,
+          "public_entries": 6519
+        },
+        "alias_resolution": {
+          "examples": [],
+          "failed_originals": 0,
+          "field_errors": 0,
+          "sources": {
+            "public_storage": 259,
+            "this_update": 86
+          },
+          "unique_assignments": 345
+        },
+        "declared_classes": {
+          "equal": true,
+          "matches": 0,
+          "mismatches": 0,
+          "ours": 0,
+          "public": 0
+        },
+        "deprecated_declared_classes": {
+          "reason": "Cairo-0 declarations are reported but not compared",
+          "skipped": 0,
+          "values": []
+        },
+        "mismatch_count": 2,
+        "mismatch_examples_truncated": false,
+        "mismatches": [
+          {
+            "address": "0x3b59fe01ce140e4b4e62c0e28e9a7f4e6738b3824d51d47e379b27c5f8d91de",
+            "aliased_address": "0x12c262b9",
+            "aliased_key": "0x12d33179",
+            "field": "storage",
+            "key": "0x702565106b3be7fe62b027176e2298dd2c9d47f1d2e783b2ed9ba88b124860b",
+            "ours": null,
+            "public": "0x0"
+          },
+          {
+            "address": "0x62da0780fae50d68cecaa5a051606dc21217ba290969b302db4dd99d2e9b470",
+            "aliased_address": "0x1a2efdb",
+            "aliased_key": "0x1255b3bf",
+            "field": "storage",
+            "key": "0x283d54db733935fab5053c7fbdfddc8c13dccd6e9cf4cdf1221170c803a8a21",
+            "ours": null,
+            "public": "0x0"
+          }
+        ],
+        "new_block_number": 16526851,
+        "ok": false,
+        "sample": 200,
+        "sampled": {
+          "class_hash": {
+            "matches": 30,
+            "mismatches": 0,
+            "population": 85,
+            "selected": 30,
+            "skipped": {
+              "sampling_limit": 55
+            }
+          },
+          "nonce": {
+            "matches": 173,
+            "mismatches": 0,
+            "population": 443,
+            "selected": 173,
+            "skipped": {
+              "sampling_limit": 270
+            }
+          },
+          "storage": {
+            "matches": 198,
+            "mismatches": 2,
+            "population": 23954,
+            "selected": 200,
+            "skipped": {
+              "sampling_limit": 23754
+            }
+          }
+        },
+        "scope": "Exact alias-contract/declaration checks; sampled other fields",
+        "seed": 0,
+        "skipped_count": 24079,
+        "totals": {
+          "difference_ours_minus_public": {
+            "contracts": 0,
+            "storage_updates": -157
+          },
+          "equal": false,
+          "explanation": "Counts differ. Public no-op writes, writes reverted within the range, empty records, or a decoding/data discrepancy could account for this. No cause is established by this sampled check; prior-state analysis would be needed.",
+          "ours": {
+            "contracts": 814,
+            "storage_updates": 23797
+          },
+          "public": {
+            "contracts": 814,
+            "storage_updates": 23954
+          }
+        }
+      },
+      "header_discovery": {
+        "offsets_examined": 1
+      },
+      "kzg_proof_count": 4,
+      "l1_block": 26214569,
+      "mismatch_count": 2,
+      "ok": false,
+      "os_header": {
+        "final_root": 3126886838359728445753768769265099424834752027069339355973813969908746341515,
+        "full_output": 0,
+        "initial_root": 3599000660460675359874975983648780699951160747835510778660973257821009289257,
+        "new_block_hash": 172633064295537306789369723724109703422413192135830597119517610095410763907,
+        "new_block_number": 16526851,
+        "os_program_hash": 569015423733809580615518794546253350390163920370934709723320624838312178729,
+        "prev_block_hash": 310843047912347473269657138479385393948753069334331048129890695845066583322,
+        "prev_block_number": 16525351,
+        "starknet_os_config_hash": 2579130946496422157802313572919622021390761807038780433165936715591440018810,
+        "use_kzg_da": 1,
+        "verified": true
+      },
+      "os_header_offset": 0,
+      "program_output_words": 40,
+      "public_chain_errors": [],
+      "slot": 15453644,
+      "slot_file_status": "blobs",
+      "starknet_range": {
+        "blocks": 1500,
+        "first": 16525352,
+        "last": 16526851
+      },
+      "timestamp": 1792267751,
+      "tx_hash": "0xb6b2320f2ec60662175290ec57d1c3a8622eab999a4936f9d87b87d5c1b8ff56",
+      "tx_index": 68,
+      "versioned_hashes": [
+        "0x01bbc3aa9011ab78ed8ff53a2368e2681242488b94967be2454cbcac31ca5fd0",
+        "0x012c0b05e8b91d56dc605bb5f5bfd1e9429cb1cc7fbdc73cce46c8501aab6764",
+        "0x0135a560e340d82a1c5709f2736e376de346aff55e41e86011e08a81d7324c16",
+        "0x011263e15601e1f291c1b717af31b99fbf67c368b4e9b285ccf82dcc37c6b9bc"
+      ]
+    }
+  ]
+}

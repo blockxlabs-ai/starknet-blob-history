@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+.cache/
+out/
+*.pyc
+trusted_setup.txt

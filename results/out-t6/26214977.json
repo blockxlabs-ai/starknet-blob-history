@@ -1,0 +1,140 @@
+{
+  "l1_block": 26214977,
+  "updates": [
+    {
+      "crosscheck": {
+        "alias_contract_storage": {
+          "equal": true,
+          "matches": 4058,
+          "mismatches": 0,
+          "ours_entries": 4058,
+          "public_entries": 4058
+        },
+        "alias_resolution": {
+          "examples": [],
+          "failed_originals": 0,
+          "field_errors": 0,
+          "sources": {
+            "public_storage": 256,
+            "this_update": 91
+          },
+          "unique_assignments": 347
+        },
+        "declared_classes": {
+          "equal": true,
+          "matches": 1,
+          "mismatches": 0,
+          "ours": 1,
+          "public": 1
+        },
+        "deprecated_declared_classes": {
+          "reason": "Cairo-0 declarations are reported but not compared",
+          "skipped": 0,
+          "values": []
+        },
+        "mismatch_count": 1,
+        "mismatch_examples_truncated": false,
+        "mismatches": [
+          {
+            "address": "0x48c1664cca46c9238c07ebc6df897672308e9eab8efcc90bc467eb61f478adc",
+            "aliased_address": "0x12d2a98c",
+            "aliased_key": "0xefe9257",
+            "field": "storage",
+            "key": "0x1abaa951e87a36bccdf7d8be8fcdb1bc37e86a5a74a3c3aea18685374d879cc",
+            "ours": null,
+            "public": "0x0"
+          }
+        ],
+        "new_block_number": 16528351,
+        "ok": false,
+        "sample": 200,
+        "sampled": {
+          "class_hash": {
+            "matches": 29,
+            "mismatches": 0,
+            "population": 67,
+            "selected": 29,
+            "skipped": {
+              "sampling_limit": 38
+            }
+          },
+          "nonce": {
+            "matches": 182,
+            "mismatches": 0,
+            "population": 487,
+            "selected": 182,
+            "skipped": {
+              "sampling_limit": 305
+            }
+          },
+          "storage": {
+            "matches": 199,
+            "mismatches": 1,
+            "population": 14436,
+            "selected": 200,
+            "skipped": {
+              "sampling_limit": 14236
+            }
+          }
+        },
+        "scope": "Exact alias-contract/declaration checks; sampled other fields",
+        "seed": 0,
+        "skipped_count": 14579,
+        "totals": {
+          "difference_ours_minus_public": {
+            "contracts": -1,
+            "storage_updates": -122
+          },
+          "equal": false,
+          "explanation": "Counts differ. Public no-op writes, writes reverted within the range, empty records, or a decoding/data discrepancy could account for this. No cause is established by this sampled check; prior-state analysis would be needed.",
+          "ours": {
+            "contracts": 810,
+            "storage_updates": 14314
+          },
+          "public": {
+            "contracts": 811,
+            "storage_updates": 14436
+          }
+        }
+      },
+      "header_discovery": {
+        "offsets_examined": 1
+      },
+      "kzg_proof_count": 3,
+      "l1_block": 26214977,
+      "mismatch_count": 1,
+      "ok": false,
+      "os_header": {
+        "final_root": 2295340237731427014127223548227008313247188796296863377485354771994565414115,
+        "full_output": 0,
+        "initial_root": 3126886838359728445753768769265099424834752027069339355973813969908746341515,
+        "new_block_hash": 2683308565241497733709027921362046634670608713614737344356434802965210096395,
+        "new_block_number": 16528351,
+        "os_program_hash": 569015423733809580615518794546253350390163920370934709723320624838312178729,
+        "prev_block_hash": 172633064295537306789369723724109703422413192135830597119517610095410763907,
+        "prev_block_number": 16526851,
+        "starknet_os_config_hash": 2579130946496422157802313572919622021390761807038780433165936715591440018810,
+        "use_kzg_da": 1,
+        "verified": true
+      },
+      "os_header_offset": 0,
+      "program_output_words": 26,
+      "public_chain_errors": [],
+      "slot": 15454053,
+      "slot_file_status": "blobs",
+      "starknet_range": {
+        "blocks": 1500,
+        "first": 16526852,
+        "last": 16528351
+      },
+      "timestamp": 1792272659,
+      "tx_hash": "0xfd252ea5ab40a6b09cea77a87ce3f7adfa2b7048dcbd3f5ca97ced36c792b40e",
+      "tx_index": 40,
+      "versioned_hashes": [
+        "0x01d2952707d571e50dd2227f9090e76bb0d628027c2179d0885e798eb0c4c921",
+        "0x012b8981e532054ebe0ed7081bc171ee6658f8ee844b4eb022420d4917657b05",
+        "0x010fcc26bbe4e833c46e420eee8563c2bd4a2af00a1dd41669cff957ba257dc0"
+      ]
+    }
+  ]
+}

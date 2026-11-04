@@ -1,0 +1,159 @@
+{
+  "l1_block": 26214566,
+  "updates": [
+    {
+      "crosscheck": {
+        "alias_contract_storage": {
+          "equal": true,
+          "matches": 7485,
+          "mismatches": 0,
+          "ours_entries": 7485,
+          "public_entries": 7485
+        },
+        "alias_resolution": {
+          "examples": [],
+          "failed_originals": 0,
+          "field_errors": 0,
+          "sources": {
+            "public_storage": 238,
+            "this_update": 96
+          },
+          "unique_assignments": 334
+        },
+        "declared_classes": {
+          "equal": true,
+          "matches": 0,
+          "mismatches": 0,
+          "ours": 0,
+          "public": 0
+        },
+        "deprecated_declared_classes": {
+          "reason": "Cairo-0 declarations are reported but not compared",
+          "skipped": 0,
+          "values": []
+        },
+        "mismatch_count": 3,
+        "mismatch_examples_truncated": false,
+        "mismatches": [
+          {
+            "address": "0x95adfc6f62cf9c60717bd5b5afa86f9eac2d736f6c3ac846be612845630e7f",
+            "aliased_address": "0x12d31b85",
+            "aliased_key": "0xeb881b1",
+            "field": "storage",
+            "key": "0x72f3a2065b1f538bd8285d1fc97f2c2bc1ca76c85e29bce9a4c4b72886307ad",
+            "ours": null,
+            "public": "0x0"
+          },
+          {
+            "address": "0x62da0780fae50d68cecaa5a051606dc21217ba290969b302db4dd99d2e9b470",
+            "aliased_address": "0x1a2efdb",
+            "aliased_key": "0x122dcdf4",
+            "field": "storage",
+            "key": "0x43ff6d9e535ee5107df71ae1c1f1e78429f1347f301441d215c1caaedac2c9c",
+            "ours": null,
+            "public": "0x2c1a"
+          },
+          {
+            "address": "0x7b5c8ec86b1f01ddda37342629b8acedce3779aee9cc6ececeea6e415fce4c2",
+            "aliased_address": "0x12d2d18c",
+            "aliased_key": "0xea73114",
+            "field": "storage",
+            "key": "0x43803df1768f14065105ce30cdfb6f5006d5f3060d47c84bcc1d935f1b9d2fa",
+            "ours": null,
+            "public": "0x0"
+          }
+        ],
+        "new_block_number": 16525351,
+        "ok": false,
+        "sample": 200,
+        "sampled": {
+          "class_hash": {
+            "matches": 30,
+            "mismatches": 0,
+            "population": 85,
+            "selected": 30,
+            "skipped": {
+              "sampling_limit": 55
+            }
+          },
+          "nonce": {
+            "matches": 173,
+            "mismatches": 0,
+            "population": 395,
+            "selected": 173,
+            "skipped": {
+              "sampling_limit": 222
+            }
+          },
+          "storage": {
+            "matches": 197,
+            "mismatches": 3,
+            "population": 22924,
+            "selected": 200,
+            "skipped": {
+              "sampling_limit": 22724
+            }
+          }
+        },
+        "scope": "Exact alias-contract/declaration checks; sampled other fields",
+        "seed": 0,
+        "skipped_count": 23001,
+        "totals": {
+          "difference_ours_minus_public": {
+            "contracts": 0,
+            "storage_updates": -245
+          },
+          "equal": false,
+          "explanation": "Counts differ. Public no-op writes, writes reverted within the range, empty records, or a decoding/data discrepancy could account for this. No cause is established by this sampled check; prior-state analysis would be needed.",
+          "ours": {
+            "contracts": 761,
+            "storage_updates": 22679
+          },
+          "public": {
+            "contracts": 761,
+            "storage_updates": 22924
+          }
+        }
+      },
+      "header_discovery": {
+        "offsets_examined": 1
+      },
+      "kzg_proof_count": 4,
+      "l1_block": 26214566,
+      "mismatch_count": 3,
+      "ok": false,
+      "os_header": {
+        "final_root": 3599000660460675359874975983648780699951160747835510778660973257821009289257,
+        "full_output": 0,
+        "initial_root": 773342309177998926236918679395888081992766667915364061801990599189795377770,
+        "new_block_hash": 310843047912347473269657138479385393948753069334331048129890695845066583322,
+        "new_block_number": 16525351,
+        "os_program_hash": 569015423733809580615518794546253350390163920370934709723320624838312178729,
+        "prev_block_hash": 2382691434423405705051152552911612956953010577278354674763300117182920829329,
+        "prev_block_number": 16523851,
+        "starknet_os_config_hash": 2579130946496422157802313572919622021390761807038780433165936715591440018810,
+        "use_kzg_da": 1,
+        "verified": true
+      },
+      "os_header_offset": 0,
+      "program_output_words": 58,
+      "public_chain_errors": [],
+      "slot": 15453641,
+      "slot_file_status": "blobs",
+      "starknet_range": {
+        "blocks": 1500,
+        "first": 16523852,
+        "last": 16525351
+      },
+      "timestamp": 1792267715,
+      "tx_hash": "0xd6ef414e57d274f16a2813f6a3c6627b0c6cca3613b3ee96147a03da971dc4e1",
+      "tx_index": 69,
+      "versioned_hashes": [
+        "0x016299dc2353971d4ce117a2208d5e29a630933c6d6f529eff27cb136f79af7f",
+        "0x01b94e22fc9effb2eb9611bf19a012bf8d30f9e895ab747d670544b11e9341ec",
+        "0x012601f27742f62c41da2fb4b38acf4064e97def7f02368ad7092af01b7b6065",
+        "0x01a981e66bce938d6e6e141bf30fb8f34a4ceef1d19442fcb7b8e538aed5b0e7"
+      ]
+    }
+  ]
+}

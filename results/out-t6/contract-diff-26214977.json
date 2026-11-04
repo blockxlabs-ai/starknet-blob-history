@@ -1,0 +1,31 @@
+{
+ "l1_block": 26214977,
+ "sn_prev": 16526851,
+ "sn_new": 16528351,
+ "ours_contracts": 810,
+ "public_contracts": 811,
+ "public_without_counterpart": [
+  {
+   "address": "0x2ab526354a39e7f5d272f327fa94e757df3688188d4a92c6dc3623ab79894e2",
+   "alias": "0xb552",
+   "nonce": null,
+   "class_hash": null,
+   "storage_entries": 2,
+   "all_storage_net_noop": true,
+   "entries": [
+    {
+     "key": "0x5451b3baa15b8622a1bbaff68035e76855cf12feb5d8f8baf43a0a494007af2",
+     "public": "0x7b734db164b8e2d000",
+     "before": "0x7b734db164b8e2d000",
+     "net_noop": true
+    },
+    {
+     "key": "0x43e1ef374bc5f9e49c6c9764a9aac6e36bc8e3df0ca3bffb3cde5a0990ca369",
+     "public": "0x79fb237a58bbca83801a2",
+     "before": "0x79fb237a58bbca83801a2",
+     "net_noop": true
+    }
+   ]
+  }
+ ]
+}

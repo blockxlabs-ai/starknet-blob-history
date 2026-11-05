@@ -354,3 +354,75 @@ def test_address_validation_and_slots() -> None:
     assert reader.slot_for_timestamp(TIMESTAMP) == 123
     assert reader.slot_for_timestamp(TIMESTAMP + 11) == 123
     assert reader.slot_for_timestamp(1606824022) == -1
+
+
+def _slim_receipt(tx_type: int, status: int) -> list[RLPInput]:
+    return [tx_type, status, 21_000, []]
+
+
+def _receipts_archive(
+    path: Path, second_block_receipts: list[list[RLPInput]] | None
+) -> Path:
+    """Two blocks with a blob tx each; the second one reverted."""
+    contents = (
+        _entry(0x6532, b"")
+        + _entry(0x0300, _header(8192, TIMESTAMP))
+        + _entry(0x0300, _header(8193, TIMESTAMP + 12))
+        + _entry(0x0400, _frame(_encode([[_blob_envelope()], [], []])))
+        + _entry(
+            0x0400,
+            _frame(_encode([[_legacy_fields(), _blob_envelope()], [], []])),
+        )
+        + _entry(0x0A00, _frame(_encode([_slim_receipt(3, 1)])))
+    )
+    if second_block_receipts is not None:
+        contents += _entry(0x0A00, _frame(_encode(second_block_receipts)))
+    path.write_bytes(contents + _entry(0x6732, b"ignored index"))
+    return path
+
+
+def test_blob_txs_with_status(tmp_path: Path) -> None:
+    path = _receipts_archive(
+        tmp_path / "receipts.ere", [_slim_receipt(0, 1), _slim_receipt(3, 0)]
+    )
+    matches = list(reader.blob_txs_with_status(path, ADDRESS))
+    assert [(tx.block_number, tx.tx_index, tx.status) for tx in matches] == [
+        (8192, 0, 1),
+        (8193, 1, 0),
+    ]
+    # Both still match their versioned hashes; only the status differs.
+    assert all(tx.versioned_hashes == VERSIONED_HASHES for tx in matches)
+    assert list(reader.blob_txs_with_status(path, OTHER_ADDRESS)) == []
+    # Plain block iteration is unaffected by receipt entries.
+    assert len(list(reader.iter_blocks(path))) == 2
+
+
+@pytest.mark.parametrize(
+    ("second_block_receipts", "message"),
+    [
+        (None, "Receipt/body count mismatch"),
+        ([_slim_receipt(3, 0)], "transaction count"),
+        ([_slim_receipt(0, 1), _slim_receipt(2, 1)], "type does not match"),
+        ([_slim_receipt(0, 1), _slim_receipt(3, 2)], "status must be 0 or 1"),
+        ([_slim_receipt(0, 1), [3, 1, 21_000]], r"\[type, status"),
+    ],
+)
+def test_blob_txs_with_status_fails_closed(
+    tmp_path: Path,
+    second_block_receipts: list[list[RLPInput]] | None,
+    message: str,
+) -> None:
+    path = _receipts_archive(tmp_path / "bad.ere", second_block_receipts)
+    with pytest.raises(reader.EreError, match=message):
+        list(reader.blob_txs_with_status(path, ADDRESS))
+
+
+def test_receipts_before_bodies(tmp_path: Path) -> None:
+    path = tmp_path / "early-receipts.ere"
+    path.write_bytes(
+        _entry(0x0300, _header(8192, TIMESTAMP))
+        + _entry(0x0A00, _frame(_encode([_slim_receipt(3, 1)])))
+        + _entry(0x0400, _frame(_encode([[_blob_envelope()], [], []])))
+    )
+    with pytest.raises(reader.EreError, match="before its body"):
+        list(reader.blob_txs_with_status(path, ADDRESS))

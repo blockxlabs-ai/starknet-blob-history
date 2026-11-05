@@ -6,6 +6,8 @@ KZG commitments are recomputed from archived blobs using the Ethereum trusted se
 
 **KZG proofs and beacon-block inclusion are NOT verified.** A commitment match establishes correspondence between the blob bytes and a transaction’s versioned hash; it must not be presented as verification of the complete beacon inclusion or data-availability proof chain.
 
+**Only successful L1 transactions are used.** A reverted blob transaction is still included in a block with its blobs, and `updateStateKzgDA` is operator-only, so anyone can send one with copied calldata and their own blob; it fails on L1 but its blobs still match its versioned hashes. The status is read from the slim receipts in the same Ere file, and anything other than status 1 is dropped (missing or inconsistent receipts are an error). A successful update has passed the core contract’s own `verifyKzgProofs` and SHARP fact checks, which tie the blobs to the proven program output; re-verifying the KZG proofs off-chain cannot show this, because a reverted transaction can carry valid proofs too. Receipts, like bodies, are taken from the Ere file as-is: they are not yet checked against the header’s receipts root. Reported by Carlos (Zealynx) on the Starknet community forum.
+
 ## Alias bootstrap depends on public RPC
 
 The blob archive starts approximately May 2025, after v0.13.4 introduced stateful alias compression. It therefore does not supply the complete earlier alias history.

@@ -26,6 +26,7 @@ type Pathish = str | os.PathLike[str]
 
 COMPRESSED_HEADER = 0x0300
 COMPRESSED_BODY = 0x0400
+COMPRESSED_SLIM_RECEIPTS = 0x0A00
 
 _MAX_SNAPPY_CHUNK = 65_536
 _MAX_RLP_DEPTH = 256
@@ -56,6 +57,8 @@ class BlobTx:
     to: bytes
     data: bytes
     versioned_hashes: list[bytes]
+    # Receipt status (1 success, 0 reverted); None when receipts were not read.
+    status: int | None = None
 
 
 def iter_entries(path: Pathish) -> Iterator[tuple[int, bytes]]:
@@ -360,12 +363,11 @@ def _body_transactions(payload: bytes) -> list[bytes]:
     return result
 
 
-def iter_blocks(path: Pathish) -> Iterator[Block]:
-    """Pair headers and bodies by position, buffering only header metadata.
+def _iter_blocks_and_receipts(path: Pathish) -> Iterator[Block | bytes]:
+    """Yield each Block in body order and each raw slim-receipts payload.
 
-    Header numbers are authoritative; filenames need not follow a convention.
-    All headers must precede bodies. Count validation finishes at exhaustion,
-    so callers must consume the entire iterator to validate the entire file.
+    Receipt payloads are positional like bodies (the n-th belongs to the n-th
+    header) and are returned undecoded, so callers decode only what they need.
     """
     headers: list[tuple[int, int]] = []
     body_count = 0
@@ -384,13 +386,27 @@ def iter_blocks(path: Pathish) -> Iterator[Block]:
             txs = _body_transactions(payload)
             body_count += 1
             yield Block(number=number, timestamp=timestamp, txs=txs)
-        # Version, index, receipts, proofs, difficulty, roots, and unknown
-        # entry types do not affect positional header/body pairing.
+        elif entry_type == COMPRESSED_SLIM_RECEIPTS:
+            yield payload
+        # Version, index, proofs, difficulty, roots, and unknown entry types
+        # do not affect positional header/body pairing.
 
     if body_count != len(headers):
         raise EreError(
             f"Header/body count mismatch: {len(headers)} headers, {body_count} bodies"
         )
+
+
+def iter_blocks(path: Pathish) -> Iterator[Block]:
+    """Pair headers and bodies by position, buffering only header metadata.
+
+    Header numbers are authoritative; filenames need not follow a convention.
+    All headers must precede bodies. Count validation finishes at exhaustion,
+    so callers must consume the entire iterator to validate the entire file.
+    """
+    for item in _iter_blocks_and_receipts(path):
+        if isinstance(item, Block):
+            yield item
 
 
 def _keccak256(data: bytes) -> bytes:
@@ -451,6 +467,61 @@ def blob_txs(block: Block, to_address: bytes) -> list[BlobTx]:
                 )
             )
     return matches
+
+
+def _receipt_status(receipts: RLP, tx_index: int, tx_count: int) -> int:
+    """Return 1/0 from a slim receipt [type, status, cumulative_gas, logs]."""
+    if not isinstance(receipts, list) or len(receipts) != tx_count:
+        raise EreError("Receipt count does not match the block's transaction count")
+    receipt = receipts[tx_index]
+    if not isinstance(receipt, list) or len(receipt) != 4:
+        raise EreError("Slim receipt must be [type, status, cumulative_gas, logs]")
+    if receipt[0] != b"\x03":
+        raise EreError("Receipt type does not match the EIP-4844 transaction")
+    if receipt[1] not in (b"", b"\x01"):
+        raise EreError("Receipt status must be 0 or 1")
+    return 1 if receipt[1] else 0
+
+
+def blob_txs_with_status(path: Pathish, to_address: bytes) -> Iterator[BlobTx]:
+    """Matching blob transactions with status read from the same file's receipts.
+
+    A reverted blob transaction is still included with its blobs, so a
+    versioned-hash match alone does not show that L1 accepted it; callers
+    should drop status != 1. Receipts follow all bodies in Ere, so matches are
+    buffered and yielded only after the receipts have been read. Missing or
+    inconsistent receipts raise EreError rather than defaulting to success.
+    """
+    tx_counts: list[int] = []
+    pending: dict[int, list[BlobTx]] = {}
+    receipt_count = 0
+
+    for item in _iter_blocks_and_receipts(path):
+        if isinstance(item, Block):
+            matches = blob_txs(item, to_address)
+            if matches:
+                pending[len(tx_counts)] = matches
+            tx_counts.append(len(item.txs))
+            continue
+
+        position = receipt_count
+        receipt_count += 1
+        if position >= len(tx_counts):
+            raise EreError("Receipts entry appears before its body")
+        if position in pending:
+            receipts = rlp_decode(snappy_frame_decode(item))
+            for transaction in pending[position]:
+                transaction.status = _receipt_status(
+                    receipts, transaction.tx_index, tx_counts[position]
+                )
+
+    if receipt_count != len(tx_counts):
+        raise EreError(
+            f"Receipt/body count mismatch: {len(tx_counts)} bodies, "
+            f"{receipt_count} receipt entries"
+        )
+    for matches in pending.values():
+        yield from matches
 
 
 def slot_for_timestamp(ts: int) -> int:

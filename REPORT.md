@@ -42,7 +42,7 @@ Each L1 update covers 1 500 Starknet blocks.
 
 ## Limitations
 See docs/LIMITATIONS.md. In short:
-- **Not verified:** KZG proofs and beacon inclusion.
+- **Not verified:** KZG proofs and beacon inclusion. L1 acceptance is taken from the receipt status in the Ere file (not yet checked against the receipts root).
 - **Alias bootstrap trusts public RPC** for aliases older than the window.
 - **The cross-check is exact only for 0x2 and classes.** The rest is a sample plus counts.
 - **Only updateStateKzgDA, full_output=0, compression v0** are supported. The archive starts around May 2025. PeerDAS columns are not decoded.
@@ -64,5 +64,6 @@ GPT workers: 823 s in total, 5 calls, 0 rerounds. Token cost is not reported by 
 ## Next steps (not started, owner decision)
 1. Exhaustive storage verification, or no-op filtering via a state-prior lookup for an entire update. This is a cost/time question for the public RPC, or for our own Starknet node.
 2. Performance: native snappy/RLP or multiprocessing over Ere. Run more updates and the whole archive window.
-3. Verify KZG proofs (ckzg verify_blob_kzg_proof) against the kzgProofs in the calldata. This is cheap and closes part of the trust gap.
+3. ~~Verify KZG proofs off-chain~~ Superseded: updates are now selected only if their L1 receipt status is 1 (see docs/LIMITATIONS.md). A successful `updateStateKzgDA` has already passed `verifyKzgProofs` and the SHARP fact check; off-chain proof checks cannot rule out a reverted copy. Re-run on Ere 03200: 40/40 core blob transactions have status 1, so the results above are unchanged.
 4. Feed into the Starknet Seed reassessment (N12) and an ESP/sponsor package (N6).
+5. Alias bootstrap without trusting RPC: prove the pre-window 0x2 entries with `starknet_getStorageProof` at the end block of a recent update, checked against the `final_root` read from L1 (aliases are never reassigned, so one proof covers every earlier update). Suggested by Carlos (Zealynx).

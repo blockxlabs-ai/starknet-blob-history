@@ -7,8 +7,11 @@ candidate's block number, and accept a candidate only after public hash
 verification. No prefix format is assumed. RPC block-not-found rejects a
 candidate; other RPC failures abort that update rather than being hidden.
 
-Only blob transactions to the core with the specified selector count
-towards --max-updates. Other core blob transactions are counted separately.
+Only blob transactions to the core with the specified selector and a
+successful receipt (status 1, read from the same Ere file) count towards
+--max-updates. Other selectors and reverted transactions are counted
+separately. Receipts follow all bodies in Ere, so the first update is
+available only after the whole file has been read.
 Transactions missing blob files, unsupported full_output payloads, decoding
 failures, and public-data failures produce explicit failed update records.
 
@@ -149,19 +152,23 @@ def main(argv=None) -> int:
             load_trusted_setup,
             match_blobs,
         )
-        from .ere_reader import blob_txs, iter_blocks, slot_for_timestamp
+        from .ere_reader import blob_txs_with_status, slot_for_timestamp
 
         client = PublicClient(args.rpc, args.cache, rate=args.rate)
         trusted_setup = load_trusted_setup(args.setup)  # Opus fix: keep the setup (T6-1 discarded it)
 
         def updates():
-            for block in iter_blocks(args.ere):
-                for transaction in blob_txs(block, args.core):
-                    counters["core_blob_transactions_seen"] += 1
-                    if transaction.data[:4] != SELECTOR:
-                        counters["other_selectors_skipped"] += 1
-                        continue
-                    yield transaction
+            for transaction in blob_txs_with_status(args.ere, args.core):
+                counters["core_blob_transactions_seen"] += 1
+                if transaction.data[:4] != SELECTOR:
+                    counters["other_selectors_skipped"] += 1
+                    continue
+                # A reverted tx still carries blobs that match its versioned
+                # hashes; only a successful one passed the core's proof checks.
+                if transaction.status != 1:
+                    counters["reverted_skipped"] += 1
+                    continue
+                yield transaction
 
         for transaction in islice(updates(), args.max_updates):
             counters["updates_selected"] += 1
@@ -298,6 +305,8 @@ def main(argv=None) -> int:
         f"- Failed updates: {failures}.\n"
         f"- Other core blob selectors skipped: "
         f"{counters['other_selectors_skipped']}.\n"
+        f"- Reverted core blob transactions skipped: "
+        f"{counters['reverted_skipped']}.\n"
         "- PASS means the stated exact and sampled assertions passed; "
         "it is not exhaustive equivalence of every state-diff field.\n"
     )

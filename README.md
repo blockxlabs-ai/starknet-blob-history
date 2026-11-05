@@ -21,6 +21,10 @@ python -m src.cli --ere /path/to/mainnet-03200-0bbc3b5f.ere --setup trusted_setu
     --rpc https://<a-public-starknet-rpc> --max-updates 3 --out out
 python -m pytest -q tests
 ```
+Optional: `pip install google-crc32c` (Apache-2.0) makes Ere decoding about 14× faster; without it a pure-Python CRC-32C is used and the results are identical.
+
+## Sample dataset
+[`samples/sample-03200/`](samples/sample-03200) holds Starknet blocks 16523852–16528351 (3 L1 updates) reconstructed from Ere epoch 03200 and archived blobs, as per-range gzip JSON and Parquet tables with a manifest of checksums. Format, schema, limitations (most contract addresses stay aliased in this sample) and how to reproduce it are in [docs/SAMPLES.md](docs/SAMPLES.md). The exporter is `python -m src.export_sample` (Parquet output needs `pip install pyarrow`).
 
 ## Credits and licence
 The blob decoding, stateless decompression and state-diff parsing are Python ports of StarkWare's reference implementation in [starkware-libs/sequencer](https://github.com/starkware-libs/sequencer) (Apache-2.0, commit 312f7f6ca120); see [NOTICE](NOTICE).

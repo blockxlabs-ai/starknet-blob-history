@@ -98,12 +98,26 @@ def _make_crc32c_table() -> tuple[int, ...]:
 _CRC32C_TABLE = _make_crc32c_table()
 
 
-def _crc32c(data: bytes) -> int:
-    """Compute CRC-32C/Castagnoli, not the IEEE CRC used by zlib."""
+def _crc32c_py(data: bytes) -> int:
+    """Compute CRC-32C/Castagnoli, not the IEEE CRC used by zlib (pure-Python reference)."""
     crc = 0xFFFFFFFF
     for value in data:
         crc = _CRC32C_TABLE[(crc ^ value) & 0xFF] ^ (crc >> 8)
     return crc ^ 0xFFFFFFFF
+
+
+# The pure-Python CRC is ~91 % of Ere decode time. Use the optional C implementation
+# google-crc32c (Apache-2.0) when installed; the result is identical (see tests).
+try:  # pragma: no cover - depends on the environment
+    import google_crc32c as _gcrc32c
+
+    def _crc32c(data: bytes) -> int:
+        return _gcrc32c.value(bytes(data))
+
+    CRC32C_IMPL = "google-crc32c/" + getattr(_gcrc32c, "implementation", "?")
+except ImportError:  # pragma: no cover
+    _crc32c = _crc32c_py
+    CRC32C_IMPL = "pure-python"
 
 
 def _masked_crc32c(data: bytes) -> int:
